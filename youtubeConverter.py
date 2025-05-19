@@ -94,53 +94,53 @@ def select_output_directory():
         output_path = selected_path
         messagebox.showinfo("Output Directory", f"Selected output directory: {output_path}")
 
-#GUI Setup 
-root = tk.Tk()
-root.title("YouTube Video Converter")
-root.resizable(False,False)
+#GUI Setup
+def run_app():
+    root = tk.Tk()
+    root.title("YouTube Video Converter")
+    root.resizable(False, False)
 
-tk.Label(root, text="YouTube Video URL:").pack()
-url_entry = tk.Entry(root, width=50)
-url_entry.pack()
+    tk.Label(root, text="YouTube Video URL:").pack()
+    url_entry = tk.Entry(root, width=50)
+    url_entry.pack()
 
-def clear_url():
-    url_entry.delete(0, tk.END)
+    def clear_url():
+        url_entry.delete(0, tk.END)
 
-tk.Button(root, text="Clear URL", command=clear_url).pack()
+    tk.Button(root, text="Clear URL", command=clear_url).pack()
 
-tk.Button(root, text="Select Output Directory", command=select_output_directory).pack()
+    tk.Button(root, text="Select Output Directory", command=select_output_directory).pack()
 
-quality_label = tk.Label(root, text=f"Selected Quality: {video_quality}")
-quality_label.pack()
+    quality_label = tk.Label(root, text=f"Selected Quality: {video_quality}")
+    quality_label.pack()
 
-quality_var = tk.StringVar(root)
-quality_var.set(video_quality)
+    quality_var = tk.StringVar(root)
+    quality_var.set(video_quality)
 
-quality_menu = tk.OptionMenu(root, quality_var, *quality_map.keys(), command=set_quality)
-quality_menu.pack()
+    quality_menu = tk.OptionMenu(root, quality_var, *quality_map.keys(), command=set_quality)
+    quality_menu.pack()
 
-format_var = tk.StringVar(root)
-format_var.set("mp4")
+    format_var = tk.StringVar(root)
+    format_var.set("mp4")
 
-def on_format_change(_):
+    def on_format_change(_):
+        text_format()
+
+    def text_format():
+        if format_var.get() == 'mp3':
+            download_button.config(text="Download Audio")
+        else:
+            download_button.config(text="Download Video")
+
+    tk.Label(root, text="Select Format:").pack()
+    format_menu = tk.OptionMenu(root, format_var, "mp4", "mp3", command=on_format_change)
+    format_menu.pack()
+
+    download_button = tk.Button(root, text="Download Video", command=lambda: download_video(
+        url_entry.get(), output_path, quality_var.get(), format_var.get())
+    )
+    download_button.pack()
+
     text_format()
 
-def text_format():
-    if format_var.get() == 'mp3':
-        download_button.config(text="Download Audio")
-    else:
-        download_button.config(text="Download Video")
-
-tk.Label(root, text="Select Format:").pack()
-format_menu = tk.OptionMenu(root, format_var, "mp4", "mp3", command=on_format_change)
-format_menu.pack()
-
-
-download_button = tk.Button(root, text="Download Video", command=lambda: download_video(
-    url_entry.get(), output_path, quality_var.get(), format_var.get())
-)
-download_button.pack()
-
-text_format()
-
-root.mainloop()
+    root.mainloop()

@@ -1,0 +1,8 @@
+Requirement already satisfied: yt-dlp in c:\users\hubie\appdata\local\programs\thonny\lib\site-packages (2025.3.31)
+
+[notice] A new release of pip is available: 23.0.1 -> 25.1.1
+[notice] To update, run: python.exe -m pip install --upgrade pip
+Requirement already satisfied: yt-dlp in c:\users\hubie\appdata\local\programs\thonny\lib\site-packages (2025.3.31)
+
+[notice] A new release of pip is available: 23.0.1 -> 25.1.1
+[notice] To update, run: python.exe -m pip install --upgrade pip
