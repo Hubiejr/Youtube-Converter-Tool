@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
-      - 'v*.*.*'  # triggers on version tags like v1.0.0
+      - 'v*.*.*'  # Triggers on version tags like v1.0.0
 
 jobs:
   build:
@@ -31,16 +31,20 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: launch-executable
-        path: dist/launch*
+        path: dist/launch.exe
 
   release:
     needs: build
     runs-on: ubuntu-latest
+
     steps:
     - name: Download artifact
       uses: actions/download-artifact@v3
       with:
         name: launch-executable
+
+    - name: List downloaded files (debug)
+      run: ls -R
 
     - name: Create GitHub Release
       id: create_release
@@ -51,6 +55,6 @@ jobs:
     - name: Upload executable to release
       uses: softprops/action-gh-release@v1
       with:
-        files: dist/launch*
+        files: launch.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
