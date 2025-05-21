@@ -2,16 +2,14 @@ name: Build and Release
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*.*.*'
+
 permissions:
   contents: write
 
 jobs:
-  build-deploy:
-    name: Build and Deploy Youtube Converter
+  build-and-release:
     runs-on: windows-latest
 
     steps:
@@ -28,28 +26,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyinstaller
 
-      - name: Build executable with PyInstaller
-        run: |
-          pyinstaller --onefile launch.py
+      - name: Build executable
+        run: pyinstaller --onefile launch.py
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: launch-executable
-          path: dist/launch.exe
+      - name: List files (debug)
+        run: Get-ChildItem -Recurse dist
 
-  release:
-    needs: build-deploy
-    runs-on: windows-latest
-
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: launch-executable
-
-      - name: Create GitHub Release
-        id: create_release
+      - name: Create GitHub Release and upload
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
@@ -57,15 +40,6 @@ jobs:
           body: |
             This is the release of version ${{ github.ref_name }}.
             The executable is attached below.
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Move executable to root
-        run: mv launch-executable/launch.exe .
-
-      - name: Upload executable to release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: launch-executable/launch.exe
+          files: dist/launch.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
