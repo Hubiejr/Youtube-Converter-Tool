@@ -1,6 +1,16 @@
 # YouTube Video Converter
 
-A simple GUI tool built with Python and `yt-dlp` to download YouTube videos as MP4 or MP3.
+
+
+# JUST DOWNLOAD THE SOURCE CODE FROM TAG DONT DOWNLOAD THE EXE cause no matter what google and any antivirus will flag it 
+
+for the source code if your antivirus flags it just wait for it to scan it will work 
+
+In the source code you could ither launch the python file `(youtubeConverter.py)`
+
+or in the `dist` file you could launch the `exe`
+
+# A simple GUI tool built with Python and `yt-dlp` to download YouTube videos as MP4 or MP3.
 
 ## Requirements
 
