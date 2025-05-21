@@ -27,19 +27,24 @@ jobs:
           pip install pyinstaller
 
       - name: Build executable with PyInstaller
-        run: pyinstaller --onefile --noconsole youtubeConverter.py
+        run: pyinstaller --onefile --windowed --name youtubeConverter youtubeConverter.py
 
-      - name: List files (debug)
-        run: Get-ChildItem -Recurse dist
+      - name: Rename and Zip Executable
+        run: |
+          cd dist
+          powershell Compress-Archive -Path youtubeConverter.exe -DestinationPath youtubeConverter.zip
 
-      - name: Create GitHub Release and upload
+      - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           body: |
-            This is the release of version ${{ github.ref_name }}.
-            The executable is attached below.
-          files: dist/youtubeConverter.exe
+            🎉 Version ${{ github.ref_name }} is out!
+
+            💾 Download `youtubeConverter.zip` and extract it before running.
+
+            ⚠️ If your antivirus flags it, you may need to allow the executable. It’s safe as long as it's from this repository.
+          files: dist/youtubeConverter.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
