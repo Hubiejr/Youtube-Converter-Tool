@@ -27,7 +27,7 @@ jobs:
           pip install pyinstaller
 
       - name: Build executable with PyInstaller
-        run: pyinstaller --onefile youtubeConverter.py
+        run: pyinstaller --onefile --noconsole youtubeConverter.py
 
       - name: List files (debug)
         run: Get-ChildItem -Recurse dist
