@@ -26,8 +26,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyinstaller
 
-      - name: Build executable
-        run: pyinstaller --onefile launch.py
+      - name: Build executable with PyInstaller
+        run: pyinstaller --onefile youtubeConverter.py
 
       - name: List files (debug)
         run: Get-ChildItem -Recurse dist
@@ -40,6 +40,6 @@ jobs:
           body: |
             This is the release of version ${{ github.ref_name }}.
             The executable is attached below.
-          files: dist/launch.exe
+          files: dist/youtubeConverter.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

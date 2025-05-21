@@ -144,3 +144,6 @@ def run_app():
     text_format()
 
     root.mainloop()
+    
+if __name__ == "__main__":
+    run_app()
