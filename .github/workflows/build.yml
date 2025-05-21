@@ -61,8 +61,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Move executable to root
-        run: |
-          mv dist/launch.exe .
+        run: mv launch-executable/launch.exe .
 
       - name: Upload executable to release
         uses: softprops/action-gh-release@v1
