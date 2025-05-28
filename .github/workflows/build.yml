@@ -27,6 +27,7 @@ jobs:
           pip install pyinstaller
 
       - name: Build executable with PyInstaller
+        shell: cmd
         run: |
           pyinstaller --onefile ^
             --windowed ^
