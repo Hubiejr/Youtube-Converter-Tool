@@ -27,12 +27,61 @@ jobs:
           pip install pyinstaller
 
       - name: Build executable with PyInstaller
-        run: pyinstaller --onefile --windowed --name youtubeConverter youtubeConverter.py
+        run: |
+          pyinstaller --onefile ^
+            --windowed ^
+            --name youtubeConverter ^
+            --clean ^
+            --noconfirm ^
+            --add-data "README.md;." ^
+            --version-file version.txt ^
+            youtubeConverter.py
 
-      - name: Rename and Zip Executable
+      - name: Create version info file
+        run: |
+          echo "VSVersionInfo(" > version.txt
+          echo "  ffi=FixedFileInfo(" >> version.txt
+          echo "    filevers=(1,0,0,0)," >> version.txt
+          echo "    prodvers=(1,0,0,0)," >> version.txt
+          echo "    mask=0x3f," >> version.txt
+          echo "    flags=0x0," >> version.txt
+          echo "    OS=0x4," >> version.txt
+          echo "    fileType=0x1," >> version.txt
+          echo "    subtype=0x0," >> version.txt
+          echo "    date=(0, 0)" >> version.txt
+          echo "  )," >> version.txt
+          echo "  kids=[" >> version.txt
+          echo "    StringFileInfo([" >> version.txt
+          echo "      StringTable(" >> version.txt
+          echo "        u'040904B0'," >> version.txt
+          echo "        [StringStruct(u'CompanyName', u'Your Name')," >> version.txt
+          echo "         StringStruct(u'FileDescription', u'YouTube Converter Tool')," >> version.txt
+          echo "         StringStruct(u'FileVersion', u'1.0.0.0')," >> version.txt
+          echo "         StringStruct(u'ProductName', u'YouTube Converter')," >> version.txt
+          echo "         StringStruct(u'ProductVersion', u'1.0.0.0')])" >> version.txt
+          echo "    ])," >> version.txt
+          echo "    VarFileInfo([VarStruct(u'Translation', [1033, 1200])])" >> version.txt
+          echo "  ]" >> version.txt
+          echo ")" >> version.txt
+
+      - name: Calculate file hash
         run: |
           cd dist
-          powershell Compress-Archive -Path youtubeConverter.exe -DestinationPath youtubeConverter.zip
+          $hash = Get-FileHash youtubeConverter.exe -Algorithm SHA256
+          $hash.Hash | Out-File -FilePath youtubeConverter.exe.sha256
+
+      - name: Create ZIP with documentation
+        run: |
+          cd dist
+          echo "YouTube Converter v${{ github.ref_name }}" > README.txt
+          echo "" >> README.txt
+          echo "This is a legitimate YouTube converter tool." >> README.txt
+          echo "Source code: https://github.com/${{ github.repository }}" >> README.txt
+          echo "SHA256: $(Get-Content youtubeConverter.exe.sha256)" >> README.txt
+          echo "" >> README.txt
+          echo "If your antivirus flags this file, it's a false positive." >> README.txt
+          echo "You can verify the hash above matches the original." >> README.txt
+          powershell Compress-Archive -Path youtubeConverter.exe,README.txt,youtubeConverter.exe.sha256 -DestinationPath youtubeConverter.zip
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v1
@@ -43,8 +92,22 @@ jobs:
             🎉 Version ${{ github.ref_name }} is out!
 
             💾 Download `youtubeConverter.zip` and extract it before running.
+            
+             **File Verification**: 
+            - SHA256 hash is included in the ZIP for verification
+            - Source code is fully available in this repository
+            
+              **Antivirus Warning**: This may trigger false positives due to PyInstaller packaging.
+            The executable is safe when downloaded from official GitHub releases.
+            
+             **Security**: 
+            - Built automatically via GitHub Actions
+            - No manual modifications to the executable
+            - Verify the SHA256 hash if concerned about integrity
 
-            ⚠️ If your antivirus flags it, you may need to allow the executable. It’s safe as long as it's from this repository.
-          files: dist/youtubeConverter.zip
+            **Installation**: Extract the ZIP file and run youtubeConverter.exe
+          files: |
+            dist/youtubeConverter.zip
+            dist/youtubeConverter.exe.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
