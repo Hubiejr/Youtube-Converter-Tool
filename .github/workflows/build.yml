@@ -26,6 +26,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyinstaller
 
+      - name: Clean previous builds
+        run: |
+          if (Test-Path "dist") { Remove-Item -Recurse -Force "dist" }
+          if (Test-Path "build") { Remove-Item -Recurse -Force "build" }
+          if (Test-Path "*.spec") { Remove-Item -Force "*.spec" }
+
       - name: Build executable with PyInstaller
         shell: cmd
         run: |
@@ -34,36 +40,7 @@ jobs:
             --name youtubeConverter ^
             --clean ^
             --noconfirm ^
-            --add-data "README.md;." ^
-            --version-file version.txt ^
             youtubeConverter.py
-
-      - name: Create version info file
-        run: |
-          echo "VSVersionInfo(" > version.txt
-          echo "  ffi=FixedFileInfo(" >> version.txt
-          echo "    filevers=(1,0,0,0)," >> version.txt
-          echo "    prodvers=(1,0,0,0)," >> version.txt
-          echo "    mask=0x3f," >> version.txt
-          echo "    flags=0x0," >> version.txt
-          echo "    OS=0x4," >> version.txt
-          echo "    fileType=0x1," >> version.txt
-          echo "    subtype=0x0," >> version.txt
-          echo "    date=(0, 0)" >> version.txt
-          echo "  )," >> version.txt
-          echo "  kids=[" >> version.txt
-          echo "    StringFileInfo([" >> version.txt
-          echo "      StringTable(" >> version.txt
-          echo "        u'040904B0'," >> version.txt
-          echo "        [StringStruct(u'CompanyName', u'Your Name')," >> version.txt
-          echo "         StringStruct(u'FileDescription', u'YouTube Converter Tool')," >> version.txt
-          echo "         StringStruct(u'FileVersion', u'1.0.0.0')," >> version.txt
-          echo "         StringStruct(u'ProductName', u'YouTube Converter')," >> version.txt
-          echo "         StringStruct(u'ProductVersion', u'1.0.0.0')])" >> version.txt
-          echo "    ])," >> version.txt
-          echo "    VarFileInfo([VarStruct(u'Translation', [1033, 1200])])" >> version.txt
-          echo "  ]" >> version.txt
-          echo ")" >> version.txt
 
       - name: Calculate file hash
         run: |
@@ -94,14 +71,14 @@ jobs:
 
             💾 Download `youtubeConverter.zip` and extract it before running.
             
-             **File Verification**: 
+            **File Verification**: 
             - SHA256 hash is included in the ZIP for verification
             - Source code is fully available in this repository
             
-              **Antivirus Warning**: This may trigger false positives due to PyInstaller packaging.
+            **Antivirus Warning**: This may trigger false positives due to PyInstaller packaging.
             The executable is safe when downloaded from official GitHub releases.
             
-             **Security**: 
+            **Security**: 
             - Built automatically via GitHub Actions
             - No manual modifications to the executable
             - Verify the SHA256 hash if concerned about integrity
