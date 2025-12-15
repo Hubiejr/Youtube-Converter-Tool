@@ -36,7 +36,7 @@ Download FFmpeg from https://ffmpeg.org/download.html#windows and add it to your
 - Built using Tkinter for GUI
 - Packaged into an executable using PyInstaller
 - CI/CD pipeline via GitHub Actions
-- 
+  
 ## How to Download
 1. Click Code
 2. Download ZIP
